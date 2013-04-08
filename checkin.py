@@ -7,6 +7,7 @@ import filecmp
 from os import listdir
 from os.path import isdir
 import cache, reset
+from subprocess import Popen, PIPE
 
 IGNORE_CONFLICTS=False
 LOG_FORMAT = '%H%x01%s%n%b'
@@ -102,7 +103,8 @@ class ITransaction(object):
     def add(self, file):
         self.checkedout.append(file)
     def co(self, file):
-        cc_exec(['co', '-reserved', '-nc', file])
+        dummy_smr_number = Popen(['echo', 'yes', '99999'], stdout=PIPE)
+        cc_exec(['co', '-reserved', '-nc', file], stdin=dummy_smr_number)
         if CC_LABEL:
             cc_exec(['mklabel', '-replace', '-nc', CC_LABEL, file])
         self.add(file)

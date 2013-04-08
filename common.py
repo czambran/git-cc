@@ -49,12 +49,12 @@ def git_exec(cmd, **args):
 def cc_exec(cmd, **args):
     return popen('cleartool', cmd, CC_DIR, **args)
 
-def popen(exe, cmd, cwd, env=None, decode=True, errors=True):
+def popen(exe, cmd, cwd, env=None, decode=True, errors=True, stdin=None):
     cmd.insert(0, exe)
     if DEBUG:
         f = lambda a: a if not a.count(' ') else '"%s"' % a
         debug('> ' + ' '.join(map(f, cmd)))
-    pipe = Popen(cmd, cwd=cwd, stdout=PIPE, stderr=PIPE, env=env)
+    pipe = Popen(cmd, cwd=cwd, stdout=PIPE, stderr=PIPE, env=env, stdin=stdin)
     (stdout, stderr) = pipe.communicate()
     if errors and pipe.returncode > 0:
         raise Exception((stderr + stdout).decode(ENCODING))
